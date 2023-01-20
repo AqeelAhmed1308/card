@@ -1,0 +1,80 @@
+firebase.google.com pr project create kr ya 
+pele se moojood project pr jaien
+
+project pr click krn or side menu me storage pr click krn
+
+first time pr 
+Get started pr click krn
+
+New screen me select krn
+    start in test mode
+phr next pr click krn
+
+cloud storage location select krn phr Done pr click krn
+ye kcuh time le ga bucket bannane me 
+
+phr hm jis tara Real time database ko apni file me script me include karte
+the krn ge
+
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyCbCskFNNiGInJLHM2k9qCPTevlbRYufKs",
+    authDomain: "practice-c07ee.firebaseapp.com",
+    projectId: "practice-c07ee",
+    storageBucket: "practice-c07ee.appspot.com",
+    messagingSenderId: "777797903006",
+    appId: "1:777797903006:web:b4717550ae395937ee118f",
+    measurementId: "G-PMYWL17C5V"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  
+  ye wali line hm type krn ge
+  import { getStorage, ref as sRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js";
+  agar hm is file realtime database use na kr rahe ho to ref ko ref rehne den ge
+  alias nahi krn ge
+  ref as sRef
+   
+   ak variable banaien jis ki type getStorgae() hogi
+   const storage = getStorage()
+
+    Refrence k lea ak variable bana ge
+    const storageRef = sRef(storage, folderName + fileName)
+    folderName ka mtlab ha k agar hm storage me jo b folder ka nam rakhna chaien rakhien
+    or isi tara file ka name b dn ge 
+
+    const uploadTask = uploadBytesResumable(storageRef, imageToUpload, metaData)
+    ak variable bana e ge ye 3 parameters required kare ga 
+1 refence 
+2 jo file upload karni ho woh 
+3 metData jo k ak object hoga jis me basically file ki type hogi
+
+const metaData = {
+                contentType: imageToUpload.type
+
+
+uploadTask.on('state-changed', (snapshot) => {
+                var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                //        upprogress.innerHTML = "Upload " + progress + '%'
+            }, (error) => {
+                alert('error')
+            }, () => {
+                getDownloadURL(uploadTask.snapshot.ref).then((downURL) => {
+                    dURL = downURL
+                    //        console.log(dURL)
+                    upData()
+                })
+            })
+            }
+
+
+
+</script>

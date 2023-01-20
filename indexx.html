@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+</head>
+
+<body>
+
+    <u>
+        <center>
+            <h2> Olx </h2>
+        </center>
+    </u>
+
+    <p>
+        <label for="">Card No.</label>
+        <input type="number" name="" id="cardNo" placeholder="Enter Card No.">
+    </p>
+    
+    <p>
+        <label for="">Item Name</label>
+        <input type="text" name="" id="iName" placeholder="Enter Item Name">
+    </p>
+    <p>
+        <label for="">Item Describtion</label>
+        <input type="text" name="" id="iDesc" placeholder="Enter Item Describtion">
+    </p>
+    <p>
+        <label for="">Item Image</label>
+        <input type="file" name="" id="itemImg">
+    </p>
+    <p>
+        <input type="button" value="Ulpoad Card" id="submit">
+    </p>
+
+
+
+
+
+    <table border="1" width="100%">
+        <thead>
+            <tr>
+                <th>
+                    Card No.
+                </th>
+
+                <th>
+                    Item Rate
+                </th>
+
+                <th>
+                    Item Describtion
+                </th>
+                <th>
+                    Image
+                </th>
+            </tr>
+        </thead>
+        <tbody id="tb">
+
+        </tbody>
+    </table>
+   
+
+
+
+
+    <script type="module">
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+        import { getDatabase, ref, push, child, set, get, remove } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+        import { getStorage, ref as sRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js";
+        const firebaseConfig = {
+            apiKey: "AIzaSyBtLb32GZpWWtytpFx36P2orWf59meX8YE",
+            authDomain: "foodmart-53623.firebaseapp.com",
+            databaseURL: "https://foodmart-53623-default-rtdb.firebaseio.com",
+            projectId: "foodmart-53623",
+            storageBucket: "foodmart-53623.appspot.com",
+            messagingSenderId: "646297051911",
+            appId: "1:646297051911:web:53ec5633602e40bb055ba2",
+            measurementId: "G-3V50M1VV6C"
+
+            // apiKey: "AIzaSyBqSb-bT4QD6rwtqLluvJun3DZ5uoPNrAg",
+            // authDomain: "admition-form.firebaseapp.com",
+            // databaseURL: "https://admition-form-default-rtdb.firebaseio.com",
+            // projectId: "admition-form",
+            // storageBucket: "admition-form.appspot.com",
+            // messagingSenderId: "735719361786",
+            // appId: "1:735719361786:web:8c929d37d26264514f4d43",
+            // measurementId: "G-CG926J1JVW"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app)
+        const dbREf = ref(db, 'Card')
+        const dbRefForGet = ref(db)
+
+        const storage = getStorage()
+        
+        //let img1 = document.getElementById('img1')
+        //img1.src ='https://firebasestorage.googleapis.com/v0/b/foodmart-53623.appspot.com/o/Images%2F62.png?alt=media&token=ca1073ad-d8f0-4af1-890b-10a0af8c8199'
+
+        let Submit = document.getElementById('submit')
+        Submit.addEventListener('click', funUpload)
+
+        let itemImg = document.getElementById('itemImg')
+
+        let files = []
+        let reader = new FileReader()
+
+        let mExtenstion = ''
+        itemImg.onchange = e => {
+            files = e.target.files
+            var extension = GetExtName(files[0])
+            mExtenstion = extension
+            console.log(extension)
+            console.log(extension)
+            var name = GetFileName(files[0])
+            console.log(name)
+            // namebox.value = name
+            // extlab.innerHTML = extension
+            reader.readAsDataURL(files[0])
+        }
+
+        function GetExtName(file) {
+            var temp = file.name.split('.')
+            console.log(temp)
+            var ext = temp.slice((temp.length - 1), temp.length)
+            console.log(ext)
+            return '.' + ext[0]
+
+        }
+
+        function GetFileName(file) {
+            var temp = file.name.split('.')
+            var fname = temp.slice(0, -1).join('.')
+            return fname
+        }
+
+        let dURL = ''
+
+        async function uploadProcess() {
+            // console.log('fired')
+            let imageToUpload = files[0]
+            let imageName = document.getElementById('cardNo').value + mExtenstion
+            console.log(imageName)
+            const metaData = {
+                contentType: imageToUpload.type
+
+            }
+            const storageRef = sRef(storage, "Images/" + imageName)
+            const uploadTask = uploadBytesResumable(storageRef, imageToUpload, metaData)
+            uploadTask.on('state-changed', (snapshot) => {
+                var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                //        upprogress.innerHTML = "Upload " + progress + '%'
+            }, (error) => {
+                alert('error')
+            }, () => {
+                getDownloadURL(uploadTask.snapshot.ref).then((downURL) => {
+                    dURL = downURL
+                    //        console.log(dURL)
+                    upData()
+                })
+            })
+
+        }
+
+        function upData() {
+            let upload = {}
+            let cardNo = document.getElementById('cardNo').value
+            upload.cardNo = cardNo
+
+            let iName = document.getElementById('iName').value
+            upload.cardName = iName
+
+            let iDesc = document.getElementById('iDesc').value
+            upload.cardDes = iDesc
+            console.log(upload)
+
+            upload.imgURL = dURL
+
+            let key = push(dbREf).key
+            upload.key = key
+            let newchild = child(dbREf, upload.key)
+            set(newchild, upload)
+        }
+        function funUpload() {
+            uploadProcess()
+
+        }
+        let allCards
+        getAllData()
+        function getAllData() {
+
+            get(child(dbRefForGet, 'Card')).then((data) => {
+                allCards = Object.values(data.val())
+                fillTable()
+
+            })
+        }
+
+        function fillTable() {
+            let tb = document.getElementById('tb')
+
+            while (tb.rows.length > 0) {
+                tb.deleteRow(0)
+            }
+
+            console.log(allCards)
+
+            allCards.forEach(element => {
+                var tr = document.createElement('tr')
+
+                var td = document.createElement('td')
+                td.innerHTML = element.cardNo
+                tr.appendChild(td)
+
+                var td = document.createElement('td')
+                td.innerText = element.cardName
+                tr.appendChild(td)
+
+                var td = document.createElement('td')
+                td.innerHTML = element.cardDes
+                tr.appendChild(td)
+
+                tb.appendChild(tr)
+            })
+
+            var td = document.createElement('td')
+
+            // td.appendChild(btn)
+            // tr.appendChild(td)
+        }
+        function fillCard() {
+
+        }
+
+            // <div class="col">
+            //     <div class="card" style="width: 200px;">
+            //         <img src=".." alt="...">
+            //         <div class="card-body">
+            //             <h5 class="card-title">500 <sub>PKR</sub></h5>
+            //             <p class="card-text">Coffee</p>
+            //             <a href="#" class="btn btn-primary">order now</a>
+            //         </div>
+            //     </div>
+            // </div>
+
+
+    </script>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,75 @@
+1) create project on firebase
+
+2) create app then web
+
+3) copy & paste CDN from project setting
+
+4) Edit the pasted CDN :
+   
+    import { getDatabase, ref, push, child, set, get, remove } 
+    from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+
+5) Also Edit these :
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app)
+    const dbREf = ref(db, '_Firebase Folder Name_')
+    const dbRefForGet = ref(db)
+
+6) Link Submit button :
+
+    let Submit = document.getElementById('_Button ID_')
+        Submit.addEventListener('click', _Function_)
+
+7) Create Function which u r linking with Submit (For exp : FunUpload) :
+
+    function _Any Name_() {
+
+        let _Object Name_ = {}
+        let _Any Name_ = document.getElementById('_ID of 1st Input_').value
+            _Object Name_._Any Name_ = _The Name Assigned In Above Line_
+    
+        Do the same procedure for other inputs...
+
+    (i) Generate Key :
+
+         let key = push(dbREf).key
+             _Object Name_.key = key
+            let newchild = child(dbREf, _Object Name_.key)
+            set(newchild, _Object Name_) 
+    }
+
+8) Create Function for GetData :
+
+    let _Any Name_
+    getAllData()
+        function getAllData() {
+
+            get(child(dbRefForGet, '_Firebase Folder Name_')).then((data) => {
+                allCards = _Object Name_.values(data.val())
+                fillTable()
+                
+            })
+        }
+   
+9) Create Function for FillTable :
+
+    function fillTable() {
+            let tb = document.getElementById('_ID of tbody')
+
+            while(tb.rows.length>0){
+                tb.deleteRow(0)
+            }
+
+    _Loop_      allCards.forEach(element => {
+                var tr = document.createElement('tr')
+
+    _Row 1_     var td = document.createElement('td')
+                td.innerHTML = element._ID of 1st Input -> We let in FunUpload_
+                tr.appendChild(td)
+
+                Do the same procedure for more rows 
+
+                tb.appendChild(tr)
+                })
+        }

@@ -1,0 +1,35 @@
+.row{
+    display: flex;
+    justify-content: space-around;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.navwhats{
+    background-color: rgb(28, 239, 112);
+    
+
+}
+.navbar{
+    background-color: black;
+    color: white;
+}
+.img{
+    image-resolution: 100%;
+    width: 500px;
+    height: 400px;
+}
+.main{
+    text-align: center;
+    border: 2PX double black;
+
+    
+}
+.card > img{
+    width: 200px;
+}
+.col{
+    width: 200px;
+    height: 400px;
+}
